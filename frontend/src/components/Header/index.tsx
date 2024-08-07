@@ -18,7 +18,12 @@ const HeaderContainer = styled.header`
 
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 1rem;
+    
+    @media screen and (min-width: 468px) {
+        padding-left: 2rem;
+        padding-right: 2rem;
 
+    }
    
 `;
 
@@ -37,6 +42,7 @@ const Title = styled.h1`
     padding-right: 0.5rem;
     font-weight: normal;
     font-size: 11.45px;
+   
 
     @media screen and (min-width: 568px) {
           font-size: 14px;
@@ -47,6 +53,8 @@ const Title = styled.h1`
 const SearchContainer = styled.div`
     width: 220px;
     padding: 0.3rem;
+   
+    height: 28px;
 
     display: flex;
     align-items: center;
@@ -56,10 +64,17 @@ const SearchContainer = styled.div`
     border: 1.5px solid #D9D9D9;   
     border-radius: 3px;
     box-shadow: 2px 1px 5px #D9D9D9;
+
+    @media screen and (min-width: 468px) {
+          width: 300px;         
+    }
     
     @media screen and (min-width: 568px) {
-          width: 530px;         
+          width: 400px;         
+    }
 
+    @media screen and (min-width: 658px) {
+          width: 530px;         
     }
 `;
 
@@ -69,6 +84,10 @@ const SearchInput = styled.input`
     color: #000000;
     outline: none;
     font-size: 10px;
+
+    &::placeholder{
+        color: #9A9A9A;
+    }
 `;
 
 const SearchIcon = styled.img`
@@ -83,22 +102,26 @@ const IconClose = styled.img`
     padding-bottom: 0.3rem;
 `;
 
+
+
 function Header(){
     return (
         <HeaderContainer>
-            <Container>
-                <img src={imgLogo} alt="CoreNotes Logo" />
+           
+                <Container>
+                    <img src={imgLogo} alt="CoreNotes Logo" />
 
-                <Title>CoreNotes</Title>
+                    <Title>CoreNotes</Title>
 
-                <SearchContainer>
-                    <SearchInput type="text" placeholder="Pesquisar notas" />
-                    <SearchIcon src={iconSearch} alt="Icon Search" />
-                </SearchContainer>
+                    <SearchContainer>
+                        <SearchInput type="text" placeholder="Pesquisar notas" />
+                        <SearchIcon src={iconSearch} alt="Icon Search" />
+                    </SearchContainer>
 
-            </Container>
+                </Container>
 
-            <IconClose src={iconClose} alt="Icon Close" />
+                <IconClose src={iconClose} alt="Icon Close" />
+            
         </HeaderContainer>
     )
 }
