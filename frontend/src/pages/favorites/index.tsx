@@ -13,22 +13,15 @@ const SectionContainer = styled.section`
     align-items: center;
     justify-content: center;
 
-    @media screen and (min-width: 568px) {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      align-items: center;
-      justify-content: center; 
-
-    }
 `;
 
-const ContainerMain = styled.div`
+const ContainerMain = styled.div<{color: string}>`
     
     width: 350px;
     height: 437.59px;
     border: none;
     box-shadow: 2px 1px 5px #D9D9D9;
-    background-color: #FFFFFF;
+    background-color: ${({ color }) => color ? color : '#FFFFFF'};
     margin-bottom: 3rem;
     
     
@@ -38,12 +31,13 @@ const ContainerMain = styled.div`
     hr{
         height: 1px;
         border: none;
-        background-color: #D9D9D9;        
+        background-color: ${({ color }) => color ? '#FFFFFF' : '#D9D9D9'} ;        
     }
     
     @media screen and (min-width: 568px) {
-        border-radius: 8px;
-        width: 530px;
+
+        width: 100%;
+        max-width: 530px;
 
     }
 `;
@@ -109,6 +103,21 @@ const ContainerOptions = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 0 2rem 0 2rem;
+
+    button{
+      border-radius: 100%;
+      width: 35px;
+      padding: 7px;
+      border: none;
+      background-color: transparent;
+
+      &:hover{
+        cursor: pointer;
+        background-color: #FFE3B3;
+      }
+    }
+
+    
 `;
 
 const ContainerEdit = styled.div`
@@ -116,9 +125,91 @@ const ContainerEdit = styled.div`
     gap: 1rem;
 `;
 
+const ContainerItems = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 4rem;
+    padding-right: 4rem;
+
+    @media screen and (min-width: 568px) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem; 
+        justify-items: center;
+        
+        ${({ children }) => {
+
+        let isSingleChildren = false;
+
+        if (Array.isArray(children)) {
+          
+          if (children.length === 1) {
+
+            isSingleChildren = true;
+
+          }
+        } else if (children) {
+         
+          isSingleChildren = true;
+          
+        }
+
+        if (isSingleChildren) {
+          return `
+            grid-template-columns: 1fr;
+            justify-content: center;
+            align-content: center;
+          `;
+        }
+        
+        return '';
+      }}
+
+    }
+`;
+
+const ContainerColors = styled.div`
+    position: absolute;
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    width: 287px;
+    height: 97px;
+    box-shadow: 2px 1px 5px #D9D9D9;
+    margin-left: 4rem;
+    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 0.4rem;
+
+`;
+
+const colors = [
+  '#BAE2FF', '#B9FFDD', '#FFE8AC', '#FFCAB9',
+  '#F99494', '#9DD6FF', '#ECA1FF', '#DAFF8B',
+  '#FFA285', '#CDCDCD', '#979797', '#A99A7C'
+];
+
+const ColorButton = styled.button<{ color: string }>`
+  background-color: ${({ color }) => color};
+  width: 37px;
+  height: 37px;
+  border: none;
+  border-radius: 100%;
+
+  &:hover{
+    cursor: pointer;
+  }
+`;
+
+
 function FavoritesNotes() {
 
     const [ favorite, setFavorite ] = useState(true);
+    const [ openContainerEditColor, setOpenContainerEditColor ] = useState(false);
+    const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
 
     const FavoriteControl = () => {
 
@@ -127,233 +218,103 @@ function FavoritesNotes() {
         } else{
             setFavorite(false);
         }
+
     };
+
+    const HandleEditColor = () => {
+
+        if( openContainerEditColor == false){
+            setOpenContainerEditColor(true);
+        } else{
+            setOpenContainerEditColor(false);
+        }
+
+    }
+
+    const HandleSelectColor = (color: string) => {
+      
+      setSelectedColor(color);
+       
+    }
+
+    
+
 
   return (
  
         <SectionContainer>
+          
           { favorite ?
           <>
             <ContainerFavorites>
               <p>Favoritas</p>
             </ContainerFavorites>
-
             
-              <ContainerMain>
-                  <ContainerTitle>
-                      <Title>
-                        Título
-                      </Title>
-                      
-                        
-                          <button onClick={FavoriteControl}>
-                              <img  src={imgStarYellow} alt="" />
-                          </button>
+            <ContainerItems>            
+            
+              <ContainerMain  color={selectedColor || ''}>
+                <ContainerTitle>
+                    <Title>
+                      Título
+                    </Title>
                     
-                  </ContainerTitle>
-
-                  <hr />
-
-                  <ContainerNote>
-                      <Note>
-                        Clique ou arraste o arquivo para esta área para fazer upload
-                      </Note>
-
-                      <ContainerOptions>
-
-                        <ContainerEdit>
-                          <button>
-                            <img src={imgEditNote} alt="Edit note icon" />
-                          </button>
-                          <button>
-                            <img src={imgEditColor} alt="Edit color icon" />
-                          </button>
-                        </ContainerEdit>
-
-                        <button>
-                          <img src={imgDeleteNote} alt="Delete note icon" />
-                        </button>
-
-                      </ContainerOptions>
-
-                  </ContainerNote>
-
-                  
-                  
-              </ContainerMain>
-
-              <ContainerMain>
-                  <ContainerTitle>
-                      <Title>
-                        Título
-                      </Title>
                       
-                        
-                          <button onClick={FavoriteControl}>
-                              <img  src={imgStarYellow} alt="" />
-                          </button>
-                    
-                  </ContainerTitle>
-
-                  <hr />
-
-                  <ContainerNote>
-                      <Note>
-                        Clique ou arraste o arquivo para esta área para fazer upload
-                      </Note>
-
-                      <ContainerOptions>
-
-                        <ContainerEdit>
-                          <button>
-                            <img src={imgEditNote} alt="Edit note icon" />
-                          </button>
-                          <button>
-                            <img src={imgEditColor} alt="Edit color icon" />
-                          </button>
-                        </ContainerEdit>
-
-                        <button>
-                          <img src={imgDeleteNote} alt="Delete note icon" />
+                        <button onClick={FavoriteControl}>
+                            <img  src={imgStarYellow} alt="" />
                         </button>
-
-                      </ContainerOptions>
-
-                  </ContainerNote>
-
                   
-                  
-              </ContainerMain>
+                </ContainerTitle>
 
-              <ContainerMain>
-                  <ContainerTitle>
-                      <Title>
-                        Título
-                      </Title>
-                      
-                        
-                          <button onClick={FavoriteControl}>
-                              <img  src={imgStarYellow} alt="" />
-                          </button>
-                    
-                  </ContainerTitle>
+                <hr />
 
-                  <hr />
+                <ContainerNote>
+                    <Note>
+                      Clique ou arraste o arquivo para esta área para fazer upload
+                    </Note>
 
-                  <ContainerNote>
-                      <Note>
-                        Clique ou arraste o arquivo para esta área para fazer upload
-                      </Note>
+                    <ContainerOptions>
 
-                      <ContainerOptions>
-
-                        <ContainerEdit>
-                          <button>
-                            <img src={imgEditNote} alt="Edit note icon" />
-                          </button>
-                          <button>
-                            <img src={imgEditColor} alt="Edit color icon" />
-                          </button>
-                        </ContainerEdit>
-
+                      <ContainerEdit>
                         <button>
-                          <img src={imgDeleteNote} alt="Delete note icon" />
+                          <img src={imgEditNote} alt="Edit note icon" />
                         </button>
-
-                      </ContainerOptions>
-
-                  </ContainerNote>
-
-                  
-                  
-              </ContainerMain>
-
-
-              <ContainerMain>
-                  <ContainerTitle>
-                      <Title>
-                        Título
-                      </Title>
-                      
-                        
-                          <button onClick={FavoriteControl}>
-                              <img  src={imgStarYellow} alt="" />
-                          </button>
-                    
-                  </ContainerTitle>
-
-                  <hr />
-
-                  <ContainerNote>
-                      <Note>
-                        Clique ou arraste o arquivo para esta área para fazer upload
-                      </Note>
-
-                      <ContainerOptions>
-
-                        <ContainerEdit>
-                          <button>
-                            <img src={imgEditNote} alt="Edit note icon" />
-                          </button>
-                          <button>
-                            <img src={imgEditColor} alt="Edit color icon" />
-                          </button>
-                        </ContainerEdit>
-
                         <button>
-                          <img src={imgDeleteNote} alt="Delete note icon" />
+                          <img src={imgEditColor} onClick={HandleEditColor} alt="Edit color icon" />
                         </button>
+                      </ContainerEdit>
 
-                      </ContainerOptions>
+                      <button>
+                        <img src={imgDeleteNote} alt="Delete note icon" />
+                      </button>
 
-                  </ContainerNote>
-
-                  
-                  
-              </ContainerMain>
-
-              <ContainerMain>
-                  <ContainerTitle>
-                      <Title>
-                        Título
-                      </Title>
-                      
-                        
-                          <button onClick={FavoriteControl}>
-                              <img  src={imgStarYellow} alt="" />
-                          </button>
+                    </ContainerOptions>
                     
-                  </ContainerTitle>
+                </ContainerNote>
 
-                  <hr />
+                {  openContainerEditColor ?
+                
+                    <ContainerColors>
 
-                  <ContainerNote>
-                      <Note>
-                        Clique ou arraste o arquivo para esta área para fazer upload
-                      </Note>
+                      {colors.map((color, index) => (
 
-                      <ContainerOptions>
+                        <ColorButton 
+                          key={index} 
+                          color={color} 
+                          onClick={() => HandleSelectColor(color)}                          
+                        />
 
-                        <ContainerEdit>
-                          <button>
-                            <img src={imgEditNote} alt="Edit note icon" />
-                          </button>
-                          <button>
-                            <img src={imgEditColor} alt="Edit color icon" />
-                          </button>
-                        </ContainerEdit>
+                      ))} 
 
-                        <button>
-                          <img src={imgDeleteNote} alt="Delete note icon" />
-                        </button>
+                  </ContainerColors>
+                  : <></>
+                }
+                
+            </ContainerMain>
+      
+              
 
-                      </ContainerOptions>
 
-                  </ContainerNote>
-
-                  
-                  
-              </ContainerMain>
+            </ContainerItems>
             </>
 
             : <></>
