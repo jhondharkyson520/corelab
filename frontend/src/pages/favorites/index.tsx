@@ -4,7 +4,7 @@ import imgEditColor from '../../assets/icons/editColor.svg';
 import imgDeleteNote from '../../assets/icons/close.svg';
 import imgStarYellow from '../../assets/icons/starYellow.svg';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const SectionContainer = styled.section`
     
@@ -62,20 +62,36 @@ const ContainerTitle =  styled.div`
     }
 `;
 
-const Note = styled.p`
+const Note = styled.textarea`
   
     color: #4F4F4D;
-    margin-left: 2rem;
-    margin-right: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     margin-top: 1rem;
+    outline: none;
+    border: none;
+
+    font-size: 13px;
+    font-family:'Inter', sans-serif ;
+
+    background-color: transparent;
+    
+    max-width: 350px;
+    height: 80%;
+    resize: none; 
+    overflow: hidden;
+   
     
 `;
 
-const Title = styled.h1`
+const Title = styled.input`
    
     font-size: 14.2px;
     color: #4F4F4D;;
     font-weight: bold;
+    outline: none;
+    border: none;
+    background-color: transparent;
 
     
 `;
@@ -86,16 +102,30 @@ const ContainerNote = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    @media screen and (min-width: 568px) {
+
+      width: 530px;
+
+    }
+   
 `;
 
 const ContainerFavorites = styled.div`
-    width: 350px;
+    width: 100%;
+    max-width: 350px;
     padding-left: 2rem;
     margin-bottom: 0.5rem;
 
     p{
       color: #464646;
       font-size: 12px;
+    }
+
+    @media screen and (min-width: 568px) {
+
+    max-width: 530px;
+
     }
 `;
 
@@ -185,11 +215,7 @@ const ContainerColors = styled.div`
 
 `;
 
-const colors = [
-  '#BAE2FF', '#B9FFDD', '#FFE8AC', '#FFCAB9',
-  '#F99494', '#9DD6FF', '#ECA1FF', '#DAFF8B',
-  '#FFA285', '#CDCDCD', '#979797', '#A99A7C'
-];
+
 
 const ColorButton = styled.button<{ color: string }>`
   background-color: ${({ color }) => color};
@@ -209,7 +235,38 @@ function FavoritesNotes() {
     const [ favorite, setFavorite ] = useState(true);
     const [ openContainerEditColor, setOpenContainerEditColor ] = useState(false);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
+    const colors = [
+      '#BAE2FF', '#B9FFDD', '#FFE8AC', '#FFCAB9',
+      '#F99494', '#9DD6FF', '#ECA1FF', '#DAFF8B',
+      '#FFA285', '#CDCDCD', '#979797', '#A99A7C'
+    ];
+
+    const [ title, setTitle] = useState('');
+    const [ note, setNote] = useState('');
+
+    const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
+    const inputTitleRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+
+      setTitle('Título');
+      setNote('Clique ou arraste o arquivo para esta área para fazer upload');
+
+    }, []);
+
+    const handleEditClick = () => {
+
+      setIsTextareaDisabled(false);
+      setTimeout(() => {
+        if (inputTitleRef.current) {
+          inputTitleRef.current.focus();
+        }
+      }, 0);
+
+    };
+    
 
     const FavoriteControl = () => {
 
@@ -221,21 +278,47 @@ function FavoritesNotes() {
 
     };
 
-    const HandleEditColor = () => {
+    const HandleEditColor = () => {        
 
-        if( openContainerEditColor == false){
-            setOpenContainerEditColor(true);
-        } else{
-            setOpenContainerEditColor(false);
-        }
+      setOpenContainerEditColor(!openContainerEditColor);
 
     }
 
     const HandleSelectColor = (color: string) => {
       
       setSelectedColor(color);
+      setOpenContainerEditColor(false);
        
     }
+
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTitle(event.target.value);   
+  
+    };
+
+    const handleNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setNote(event.target.value);
+
+    };
+
+
+    useEffect(() => {
+
+      const handleCloseContainerColor = (event: MouseEvent) => {
+
+        if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+
+          setOpenContainerEditColor(false);
+
+        }
+      };
+  
+      document.addEventListener('mousedown', handleCloseContainerColor);
+      return () => {
+        document.removeEventListener('mousedown', handleCloseContainerColor);
+      };
+    }, []);
+  
 
     
 
@@ -254,9 +337,13 @@ function FavoritesNotes() {
             
               <ContainerMain  color={selectedColor || ''}>
                 <ContainerTitle>
-                    <Title>
-                      Título
-                    </Title>
+                    <Title
+                      ref={inputTitleRef} 
+                      type="text" 
+                      value={title}
+                      disabled={isTextareaDisabled}
+                      onChange={handleTitleChange} 
+                    />
                     
                       
                         <button onClick={FavoriteControl}>
@@ -268,14 +355,17 @@ function FavoritesNotes() {
                 <hr />
 
                 <ContainerNote>
-                    <Note>
-                      Clique ou arraste o arquivo para esta área para fazer upload
-                    </Note>
+                    <Note 
+                      value={note}
+                      onChange={handleNoteChange}
+                      disabled={isTextareaDisabled} 
+                    />
+                                
 
                     <ContainerOptions>
 
                       <ContainerEdit>
-                        <button>
+                        <button onClick={handleEditClick}>
                           <img src={imgEditNote} alt="Edit note icon" />
                         </button>
                         <button>
@@ -293,7 +383,7 @@ function FavoritesNotes() {
 
                 {  openContainerEditColor ?
                 
-                    <ContainerColors>
+                    <ContainerColors ref={containerRef}>
 
                       {colors.map((color, index) => (
 
