@@ -5,14 +5,16 @@ class AddNoteController{
 
     async handle(req: Request, res: Response){
 
-        const {id, title, note} = req.body;
+        const {id, title, note, favorite, color} = req.body;
 
         const addNote = new AddNoteService();
 
         const order = await addNote.execute({
             id,
             title,
-            note
+            note,
+            favorite,
+            color
         });
 
         return res.json(order);
