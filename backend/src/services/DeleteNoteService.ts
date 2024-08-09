@@ -5,14 +5,13 @@ interface NoteRequest{
 }
 
 class DeleteNoteService{
-    async execute({id}: NoteRequest){        
-        console.log('id: ', id);
+    async execute({id}: NoteRequest){   
         
         const notes = await prismaClient.notes.delete({
             where: {
                 id: id                
             }
-        })
+        });
 
         return notes;
 

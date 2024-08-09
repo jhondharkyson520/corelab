@@ -6,10 +6,15 @@ class ListNoteController{
 
         const listNoteService = new ListNoteService();
 
-        const category = await listNoteService.execute();
+        const notes = await listNoteService.execute();
         
 
-        return res.json(category);
+        if( notes ){
+            return res.status(200).json(notes);
+            
+        } else{
+            return res.status(404).send();
+        }
 
     }
 }

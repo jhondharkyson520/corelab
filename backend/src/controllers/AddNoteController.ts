@@ -9,7 +9,7 @@ class AddNoteController{
 
         const addNote = new AddNoteService();
 
-        const order = await addNote.execute({
+        const notes = await addNote.execute({
             id,
             title,
             note,
@@ -17,7 +17,12 @@ class AddNoteController{
             color
         });
 
-        return res.json(order);
+        if( notes ){
+            return res.status(201).json(notes);
+            
+        } else{
+            return res.status(404).send();
+        }
 
     }
 

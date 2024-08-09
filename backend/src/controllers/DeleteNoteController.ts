@@ -5,16 +5,21 @@ import {DeleteNoteService} from '../services/DeleteNoteService'
 class DeleteNoteController{
     async handle(req: Request, res: Response){
 
-        const id = req.query.id as string;
+        const { id } = req.params;
 
         const deleteNoteService = new DeleteNoteService();
 
-        const note = await deleteNoteService.execute({
+        const notes = await deleteNoteService.execute({
             id
         });
 
 
-        return res.json(note);
+        if( notes ){
+            return res.status(204).json(notes);
+            
+        } else{
+            return res.status(404).send();
+        }
 
     }
 }
