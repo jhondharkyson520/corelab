@@ -2,129 +2,194 @@ import styled from 'styled-components';
 import imgStarTransparent from '../../assets/icons/starTransparent.svg';
 import imgStarYellow from '../../assets/icons/starYellow.svg';
 import { useState } from 'react';
+import { createNote } from '../../services/api';
+import { toast } from 'react-toastify';
 
-const SectionContainer = styled.section`
-    
+const SectionContainer = styled.section`    
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    
+    justify-content: center;    
 `;
 
-const ContainerMain = styled.div`
-    
+const ContainerMain = styled.div`    
     width: 350px;
     height: 103.36px;
     border: 2px solid #D9D9D9;
-    box-shadow: 2px 1px 5px #D9D9D9;
-    margin-bottom: 3rem;
-    background-color: #FFFFFF;
-    
-    
-   
     border-radius: 28px;
+    box-shadow: 2px 1px 5px #D9D9D9;
+    background-color: #FFFFFF;  
+    margin-bottom: 3rem;      
 
-    hr{
+    hr {
         height: 2px;
         border: none;
-        background-color: #D9D9D9;        
+        background-color: #D9D9D9;
     }
     
-    @media screen and (min-width: 568px) {
+    @media screen and (min-width: 568px) {        
+        width: 530px;
         border-radius: 8px;
-        width: 530px;       
-
     }
 `;
 
 const ContainerTitle =  styled.div`
+    padding: 0.5rem 2rem 0.5rem 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 2rem 0.5rem 2rem;
+    justify-content: space-between;    
 
-    button{
+    button {
         padding: 0;
-        margin: 0;
+        border: none;        
         background: transparent;
-        border: none;
+        margin: 0;        
         cursor: pointer;
     }
 
-    img{
+    img {
         width: 19.35px;
         height: 18.38px;
     }
+
 `;
 
-const InputNote = styled.input`
+const TextNote = styled.textarea`
     outline: none;
     border: none;
     color: #50656E;
-    margin-left: 2rem;
-    
+    margin: 1rem 2rem 0.5rem 2rem;
+    outline: none;
+    border: none;
+    font-size: 13px;
+    font-family:'Inter', sans-serif ;
+    background-color: transparent;
+    resize: none; 
+    overflow: hidden;
 
     &::placeholder {
-        color: #50656E;       
+        color: #50656E;
     }
+
 `;
 
 const InputTitle = styled.input`
     outline: none;
     border: none;
     font-size: 14.2px;
-    color: #000000;
     font-weight: bolder;
+    color: #000000;    
 
     &::placeholder {
-        color: #000000;       
+        color: #000000;
     }
+
 `;
 
 const ContainerNote = styled.div`
-    display: flex;
-    height: 55%;
+    height: 55%;    
+    display: flex;    
     align-items: center;
 `;
 
 
 function CreateNotes() {
 
-    const [ favorite, setFavorite ] = useState(false);
+    const [favorite, setFavorite] = useState(false);
+    const [title, setTitle] = useState('');
+    const [note, setNote] = useState('');
 
-    const FavoriteControl = () => {
+    const favoriteControl = (event: React.FormEvent) => {
+        event.preventDefault(); 
+        setFavorite(!favorite);
+    };
 
-        if( favorite == false){
-            setFavorite(true);
-        } else{
-            setFavorite(false);
+
+    const handleSubmit = async () => {
+
+        if(title === '' || note === '') {
+            toast.warning("Preencha todos os campos!");
+            return;
         }
+
+        const newNote = {
+          title,
+          note,
+          favorite
+        };
+      
+        try {
+
+            const response = await createNote( newNote );
+            toast.success( 'Nota criada');         
+            setTitle( '' );
+            setNote( '' );
+            setFavorite( false );
+
+        } catch (error) {  
+
+            if(error instanceof Error) {
+                toast.error(error.message);
+              } else {
+                toast.error('Erro ao cadastrar');
+              }
+
+        }
+
+      };
+      
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement >) => {
+
+        if (e.key === 'Enter') {
+          e.preventDefault(); 
+          handleSubmit();
+        }
+
     };
 
   return (
+
     <SectionContainer>
-        <ContainerMain>
-            <ContainerTitle>
-                <InputTitle type="text" placeholder="Título" required />
-                { !favorite 
-                    ?
-                    <button onClick={FavoriteControl}>
-                        <img src={imgStarTransparent} alt="" />
-                    </button>
-                    :
-                    <button onClick={FavoriteControl}>
-                        <img  src={imgStarYellow} alt="" />
-                    </button>
-                }
-            </ContainerTitle>
+        <ContainerMain>            
+            <form onSubmit={handleSubmit}>
+                
+                <ContainerTitle>
+                                   
+                    <InputTitle 
+                        type="text" 
+                        placeholder="Título" 
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        onKeyDown={handleKeyDown} 
+                        required 
+                    />
 
-            <hr />
+                    { !favorite 
+                        ?
+                        <button onClick={favoriteControl}>
+                            <img src={imgStarTransparent} alt="" />
+                        </button>
+                        :
+                        <button onClick={favoriteControl}>
+                            <img  src={imgStarYellow} alt="" />
+                        </button>
+                    }
 
-            <ContainerNote>
-                <InputNote type="text" placeholder="Criar nota..." required />
-            </ContainerNote>
-            
+                </ContainerTitle>
+
+                <hr />
+
+                <ContainerNote>
+                    <TextNote 
+                        placeholder="Criar nota..." 
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        onKeyDown={handleKeyDown} 
+                        required 
+                    />
+                </ContainerNote>
+
+            </form>            
         </ContainerMain>
     </SectionContainer>
   )

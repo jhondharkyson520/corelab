@@ -17,11 +17,10 @@ app.use((err, request, response, next) => {
             error: err.message
         });
     }
-    ;
     return response.status(500).json({
         status: 'error',
         message: 'Internal server error.'
     });
 });
-app.listen(3333, () => console.log('Servidor online!!!'));
+app.listen(3333, () => console.log('Server on!!!'));
 //# sourceMappingURL=server.js.map

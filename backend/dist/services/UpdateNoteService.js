@@ -19,7 +19,9 @@ class UpdateNoteService {
     execute(_a) {
         return __awaiter(this, arguments, void 0, function* ({ id, title, note, favorite, color }) {
             const updateNotes = yield client_1.default.notes.update({
-                where: { id },
+                where: {
+                    id
+                },
                 data: {
                     title: title,
                     note: note,
