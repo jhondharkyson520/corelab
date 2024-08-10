@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { AddNoteController } from "./controllers/AddNoteController";
-import { ListNoteController } from "./controllers/ListNoteController";
+import { CreateNoteController } from "./controllers/CreateNoteController";
+import { ReadNoteController } from "./controllers/ReadNoteController";
 import { DeleteNoteController } from "./controllers/DeleteNoteController";
-import { EditNoteController } from "./controllers/EditNoteController";
+import { UpdateNoteController } from "./controllers/UpdateNoteController";
 
-const router = Router();
+    const router = Router();
 
-router.post("/note/create", new AddNoteController().handle);
-router.get("/note/read", new ListNoteController().handle);
-router.put("/note/update/:id", new EditNoteController().handle);
-router.delete("/note/delete/:id", new DeleteNoteController().handle);
+    router.post( "/note/create", new CreateNoteController().handle );
+    router.get( "/note/read", new ReadNoteController().handle );
+    router.put( "/note/update/:id", new UpdateNoteController().handle );
+    router.delete( "/note/delete/:id", new DeleteNoteController().handle );
 
 
 export { router };

@@ -1,27 +1,26 @@
 import { Request, Response } from "express";
 import {DeleteNoteService} from '../services/DeleteNoteService'
 
-
 class DeleteNoteController{
-    async handle(req: Request, res: Response){
 
-        const { id } = req.params;
+    async handle( request: Request, response: Response ){
 
+        const { id } = request.params;
         const deleteNoteService = new DeleteNoteService();
-
-        const notes = await deleteNoteService.execute({
-            id
-        });
-
+        const notes = await deleteNoteService.execute({ id });
 
         if( notes ){
-            return res.status(204).json(notes);
+
+            return response.status( 204 ).json( notes );
             
         } else{
-            return res.status(404).send();
+
+            return response.status( 404 ).send();
+
         }
 
-    }
-}
+    };
 
-export {DeleteNoteController}
+};
+
+export { DeleteNoteController };

@@ -1,21 +1,22 @@
 import prismaClient from "../prisma/client";
 
-interface NoteRequest{
-    id: string;
-}
-
+interface DeleteNoteRequest{ id: string; };
 class DeleteNoteService{
-    async execute({id}: NoteRequest){   
+
+    async execute( { id }: DeleteNoteRequest ){ 
         
-        const notes = await prismaClient.notes.delete({
-            where: {
-                id: id                
+        const deleteNotes = await prismaClient.notes.delete({
+
+            where: { 
+                id: id 
             }
+
         });
 
-        return notes;
+        return deleteNotes;
 
-    }
-}
+    };
 
-export {DeleteNoteService};
+};
+
+export { DeleteNoteService };

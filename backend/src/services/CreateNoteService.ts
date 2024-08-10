@@ -1,37 +1,51 @@
 import prismaClient from "../prisma/client";
 
-interface NoteRequest{
+interface CreateNoteRequest{
+
     id: string;
     title: string;
     note: string;
     favorite: boolean;
     color?: string;
+
 }
 
-class AddNoteService{
-    async execute({ id, title, note, favorite, color }: NoteRequest){
+class CreateNoteService{
+
+    async execute( { id, title, note, favorite, color }: CreateNoteRequest ){
 
         const colorControler = () => {
-            if(color){
-                return color;
-            } else{
-                return 'FFFFFF';
-            }
-        }
 
-        const notes = await prismaClient.notes.create({
+            if( color ){
+
+                return color;
+
+            } else{
+
+                return 'FFFFFF';
+
+            }
+
+        };
+
+        const createNotes = await prismaClient.notes.create({
+
             data: {
+
                 id: id,
                 title: title,
                 note: note,
                 favorite: favorite,
-                color: colorControler(),
+                color: colorControler()
+
             }
+
         });
 
-        return notes;
+        return createNotes;
 
-    }
-}
+    };
 
-export {AddNoteService};
+};
+
+export { CreateNoteService };
