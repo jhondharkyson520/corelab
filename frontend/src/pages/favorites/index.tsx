@@ -3,30 +3,24 @@ import imgEditNote from '../../assets/icons/editNote.svg';
 import imgEditColor from '../../assets/icons/editColor.svg';
 import imgDeleteNote from '../../assets/icons/close.svg';
 import imgStarYellow from '../../assets/icons/starYellow.svg';
-
 import { useEffect, useRef, useState } from 'react';
 import { deleteNote, getNotes, updateNote } from '../../services/api';
+import { toast } from 'react-toastify';
 
 const SectionContainer = styled.section`
-    
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-
 `;
 
-const ContainerMain = styled.div<{color: string}>`
-    
+const ContainerMain = styled.div<{color: string}>`    
     width: 350px;
     height: 437.59px;
     border: none;
     box-shadow: 2px 1px 5px #D9D9D9;
     background-color: ${({ color }) => color ? color : '#FFFFFF'};
-    margin-bottom: 3rem;
-    
-    
-   
+    margin-bottom: 3rem;      
     border-radius: 28px;
 
     hr{
@@ -36,10 +30,8 @@ const ContainerMain = styled.div<{color: string}>`
     }
     
     @media screen and (min-width: 568px) {
-
         width: 100%;
         max-width: 530px;
-
     }
 `;
 
@@ -63,38 +55,29 @@ const ContainerTitle =  styled.div`
     }
 `;
 
-const Note = styled.textarea`
-  
+const Note = styled.textarea`  
     color: #4F4F4D;
     padding-left: 2rem;
     padding-right: 2rem;
     margin-top: 1rem;
     outline: none;
     border: none;
-
     font-size: 13px;
     font-family:'Inter', sans-serif ;
-
-    background-color: transparent;
-    
+    background-color: transparent;    
     max-width: 350px;
     height: 80%;
     resize: none; 
-    overflow: hidden;
-   
-    
+    overflow: hidden;  
 `;
 
-const Title = styled.input`
-   
+const Title = styled.input`   
     font-size: 14.2px;
     color: #4F4F4D;;
     font-weight: bold;
     outline: none;
     border: none;
-    background-color: transparent;
-
-    
+    background-color: transparent;    
 `;
 
 const ContainerNote = styled.div`
@@ -105,16 +88,14 @@ const ContainerNote = styled.div`
     justify-content: space-between;
 
     @media screen and (min-width: 568px) {
-
-      width: 530px;
-
+       max-width: 390px;
     }
    
 `;
 
 const ContainerFavorites = styled.div`
+    
     width: 100%;
-    max-width: 350px;
     padding-left: 2rem;
     margin-bottom: 0.5rem;
 
@@ -124,15 +105,20 @@ const ContainerFavorites = styled.div`
     }
 
     @media screen and (min-width: 568px) {
-
-    max-width: 530px;
+      width: 100%;
+      display: flex;
+      padding-left: 6rem;
+      margin-bottom: 0.5rem;
 
     }
+
+   
 `;
 
 const ContainerOptions = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0 2rem 0 2rem;
 
     button{
@@ -146,9 +132,7 @@ const ContainerOptions = styled.div`
         cursor: pointer;
         background-color: #FFE3B3;
       }
-    }
-
-    
+    }    
 `;
 
 const ContainerEdit = styled.div`
@@ -164,7 +148,37 @@ const ContainerItems = styled.div`
     padding-left: 4rem;
     padding-right: 4rem;
 
-    @media screen and (min-width: 568px) {
+    @media screen and (min-width: 1008px) {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem; 
+        justify-items: center;
+
+        ${({ children }) => {
+
+          let isSingleChildren = false;
+
+          if (Array.isArray(children)) {            
+            if (children.length === 1) {
+              isSingleChildren = true;
+            }
+          } else if (children) {          
+            isSingleChildren = true;            
+          }
+
+          if (isSingleChildren) {
+            return `
+              grid-template-columns: 1fr;
+              justify-content: center;
+              align-content: center;
+            `;
+          }
+
+          return '';
+          }}        
+      }
+
+    @media screen and (min-width: 1268px) {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2rem; 
@@ -172,33 +186,27 @@ const ContainerItems = styled.div`
         
         ${({ children }) => {
 
-        let isSingleChildren = false;
+          let isSingleChildren = false;
 
-        if (Array.isArray(children)) {
-          
-          if (children.length === 1) {
-
-            isSingleChildren = true;
-
+          if (Array.isArray(children)) {            
+            if (children.length === 1) {
+              isSingleChildren = true;
+            }
+          } else if (children) {          
+            isSingleChildren = true;            
           }
-        } else if (children) {
-         
-          isSingleChildren = true;
+
+          if (isSingleChildren) {
+            return `
+              grid-template-columns: 1fr;
+              justify-content: center;
+              align-content: center;
+            `;
+          }
           
-        }
-
-        if (isSingleChildren) {
-          return `
-            grid-template-columns: 1fr;
-            justify-content: center;
-            align-content: center;
-          `;
-        }
-        
-        return '';
-      }}
-
-    }
+          return '';
+        }}
+      }
 `;
 
 const ContainerColors = styled.div`
@@ -213,10 +221,7 @@ const ContainerColors = styled.div`
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     padding: 0.4rem;
-
 `;
-
-
 
 const ColorButton = styled.button<{ color: string }>`
   background-color: ${({ color }) => color};
@@ -242,14 +247,14 @@ interface NoteProps {
     notesFavorites: ListProps[];
 }
 
-function FavoritesNotes({notesFavorites}: NoteProps ) {
+function FavoritesNotes({notesFavorites}: NoteProps) {
 
+    const [notesList, setNotesList] = useState(notesFavorites || []);
     const [ favorite, setFavorite ] = useState(true);
+
     const [ openContainerEditColor, setOpenContainerEditColor ] = useState<string | null>(null);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [notesList, setNotesList] = useState(notesFavorites || []);
-    const [editNoteId, setEditNoteId] = useState<string | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);    
 
     const colors = [
       '#BAE2FF', '#B9FFDD', '#FFE8AC', '#FFCAB9',
@@ -257,60 +262,36 @@ function FavoritesNotes({notesFavorites}: NoteProps ) {
       '#FFA285', '#CDCDCD', '#979797', '#A99A7C'
     ];
 
-    const [ title, setTitle] = useState('');
-    const [ note, setNote] = useState('');
-
-    const [isTextareaDisabled, setIsTextareaDisabled] = useState(true);
-    const inputTitleRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-
-      setTitle('Título');
-      setNote('Clique ou arraste o arquivo para esta área para fazer upload');
-
-    }, []);
-
-    const handleEditClick = (id: string) => {
-      setEditNoteId(id);
-      setIsTextareaDisabled(false);
-      setTimeout(() => {
-        if (inputTitleRef.current) {
-          inputTitleRef.current.focus();
-        }
-      }, 0);
-
-    };
-    
-
     const FavoriteControl = async (id: string) => {
+        try {
+          const noteToUpdate = notesList.find((note) => note.id === id);
+      
+          if (noteToUpdate) {
+              const updatedNote = {
+                ...noteToUpdate,
+                favorite: !noteToUpdate.favorite,
+              };
+        
+            await updateNote(id, updatedNote);
+        
+            setNotesList((prevNotesList) =>
+                prevNotesList.map((note) =>
+                  note.id === id ? updatedNote : note
+                )
+            );
+          }
 
-      try {
-        const noteToUpdate = notesList.find((note) => note.id === id);
-    
-        if (noteToUpdate) {
-          const updatedNote = {
-            ...noteToUpdate,
-            favorite: !noteToUpdate.favorite,
-          };
-    
-         await updateNote(id, updatedNote);
-    
-          setNotesList((prevNotesList) =>
-            prevNotesList.map((note) =>
-              note.id === id ? updatedNote : note
-            )
-          );
+          toast.success('Nota removida dos favoritos!');
+          
+        } catch (error) {
+          toast.error('Erro ao remover nota dos favoritos!');
+          //console.error('Error update:', error);
         }
-      } catch (error) {
-        console.error('Erro ao atualizar a nota:', error);
-      }
-
     };
 
     const HandleEditColor = (id: string) => {
       setOpenContainerEditColor(openContainerEditColor === id ? null : id);
-    };
-  
+    };  
 
     const HandleSelectColor = async (id: string, color: string) => {
         try {
@@ -323,83 +304,103 @@ function FavoritesNotes({notesFavorites}: NoteProps ) {
             };
 
             await updateNote(id, updatedNote);
-
             setNotesList((prevNotesList) => prevNotesList.map((note) => (note.id === id ? updatedNote : note)));
           }
 
           setSelectedColor(color);
           setOpenContainerEditColor(null);
+          toast.success('Cor da nota atualizada com sucesso!');
+
         } catch(error) {
-            console.log('Error update color: ', error);
-            
+            toast.error('Erro ao atualizar cor da nota!');
+            //console.log('Error update color: ', error);            
         }     
        
-    }
-
-    const handleTitleChange = (id: string, newTitle: string) => {
-      setNotesList(prevNotesList =>
-          prevNotesList.map(note =>
-              note.id === id ? { ...note, title: newTitle } : note
-          )
-      );
     };
-    
-    const handleNoteChange = (id: string, newNote: string) => {
-        setNotesList(prevNotesList =>
-            prevNotesList.map(note =>
-                note.id === id ? { ...note, note: newNote } : note
-            )
-        );
-    };
-    
 
     const handleDeleteNote = async (id: string) => {
         try{
           await deleteNote(id);
           setNotesList((prevNotesList) => prevNotesList.filter((note) => note.id !== id));
+          toast.success('Nota deletada com sucesso!');
         } catch(error) {
-          console.log('Error delete note: ', error);
+          toast.error('Erro ao deletar nota!');
+          //console.log('Error delete note: ', error);
         }
-    }
-
+    };
 
     useEffect(() => {
 
       const handleCloseContainerColor = (event: MouseEvent) => {
-
         if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-
           setOpenContainerEditColor(null);
-
-        }
+        }        
       };
   
       document.addEventListener('mousedown', handleCloseContainerColor);
+
       return () => {
         document.removeEventListener('mousedown', handleCloseContainerColor);
       };
+
     }, []);
 
-
     useEffect(() => {
+
       async function fetchDataNote() {
           try {
               const response = await getNotes();
               setNotesList(response.data);
-              console.log('Note list: ', notesList);
-              
+              //console.log('Note list: ', notesList);              
           } catch (error) {
               console.error("Error read note:", error);
           }
-      }
+      };
 
       fetchDataNote();
+
   }, []);
-
   
-  
+  const handleEditNote = async ( id: string, title: string, note: string) => {
 
-    
+      try {
+        const noteUpdate = notesList.find((note) => note.id === id);
+
+        if(noteUpdate) {
+          const updatedNote = {
+            ...noteUpdate,
+            title: title,
+            note: note,
+          };
+
+          await updateNote(id, updatedNote);
+
+          setNotesList((prevNotesList) => prevNotesList.map((note) => (note.id === id ? updatedNote : note)));
+        }
+
+        toast.success("Nota atualizada com sucesso!");
+        
+      } catch(error) {
+          console.log('Error update color: ', error);
+          toast.error('Erro ao atualizar nota!');          
+      }
+  };
+
+  const handleTitleChange = (id: string, newTitle: string) => {
+    setNotesList((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === id ? { ...note, title: newTitle } : note
+      )
+    );
+  };
+
+  const handleNoteChange = (id: string, newNote: string) => {
+    setNotesList((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === id ? { ...note, note: newNote } : note
+      )
+    );
+  };    
 
   return (
  
@@ -409,83 +410,66 @@ function FavoritesNotes({notesFavorites}: NoteProps ) {
           <>
             <ContainerFavorites>
               <p>Favoritas</p>
-            </ContainerFavorites>
-            
-                 <ContainerItems >
+            </ContainerFavorites>            
+                <ContainerItems >
+
                  {notesList
-                  .filter((note) => note.favorite === false)
+                  .filter((note) => note.favorite === true)
                   .map((notesFavorites) => (         
                 
                  <ContainerMain key={notesFavorites.id} color={notesFavorites.color}>
                    <ContainerTitle>
                        <Title
-                         ref={inputTitleRef} 
                          type="text" 
                          value={notesFavorites.title}
-                         disabled={notesFavorites.id !== editNoteId || isTextareaDisabled}
                          onChange={(e) => handleTitleChange(notesFavorites.id, e.target.value)}
-                       />
-                       
-                         
-                           <button onClick={() => FavoriteControl(notesFavorites.id)}>
-                               <img  src={imgStarYellow} alt="Star Yellow icon" />
-                           </button>
-                     
+                       />                     
+                       <button onClick={() => FavoriteControl(notesFavorites.id)}>
+                          <img  src={imgStarYellow} alt="Star Yellow icon" />
+                       </button>                     
                    </ContainerTitle>
    
                    <hr />
    
                    <ContainerNote>
+
                        <Note 
                          value={notesFavorites.note}
                          onChange={(e) => handleNoteChange(notesFavorites.id, e.target.value)}
-                         disabled={notesFavorites.id !== editNoteId || isTextareaDisabled}
-                       />
-                                   
+                       />                                   
    
-                       <ContainerOptions>
-   
+                       <ContainerOptions>   
                          <ContainerEdit>
-                           <button onClick={() => handleEditClick(notesFavorites.id)}>
+                           <button onClick={() => handleEditNote(notesFavorites.id, notesFavorites.title, notesFavorites.note)}>
                              <img src={imgEditNote} alt="Edit note icon" />
                            </button>
-                           <button>
-                             <img src={imgEditColor} onClick={() => HandleEditColor(notesFavorites.id)} alt="Edit color icon" />
+                           <button onClick={() => HandleEditColor(notesFavorites.id)}>
+                             <img src={imgEditColor} alt="Edit color icon" />
                            </button>
                          </ContainerEdit>
-   
-                         <button>
-                           <img src={imgDeleteNote} onClick={() => handleDeleteNote(notesFavorites.id)} alt="Delete note icon" />
+                         <button onClick={() => handleDeleteNote(notesFavorites.id)}>
+                            <img src={imgDeleteNote} alt="Delete note icon" />
                          </button>
-   
-                       </ContainerOptions>
-                       
+                       </ContainerOptions>   
+
                    </ContainerNote>
    
                    {  openContainerEditColor === notesFavorites.id && (
-                      <ContainerColors ref={containerRef}>
-   
-                          {colors.map((color, index) => (
 
+                      <ContainerColors ref={containerRef}>   
+                          {colors.map((color, index) => (
                             <ColorButton 
                               key={index} 
                               color={color} 
                               onClick={() => HandleSelectColor(notesFavorites.id, color)}                          
                             />
-
                           ))} 
-
                       </ContainerColors>
 
-                   )}
-                   
-                       
-               </ContainerMain>                    
-
+                   )} 
+               </ContainerMain>
               ))}
-   
-               </ContainerItems>
-           
+              </ContainerItems>          
            
             </>
 
@@ -494,7 +478,6 @@ function FavoritesNotes({notesFavorites}: NoteProps ) {
           }
 
         </SectionContainer>
-
   )
 }
 
