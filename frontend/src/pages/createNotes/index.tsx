@@ -9,7 +9,7 @@ const SectionContainer = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
 `;
 
 const ContainerMain = styled.div`    
@@ -120,9 +120,9 @@ function CreateNotes() {
       
         try {
 
-            const response = await createNote( newNote );
-            toast.success( 'Nota criada');         
-            setTitle( '' );
+            const response = await createNote(newNote);
+            toast.success('Nota criada');         
+            setTitle('');
             setNote( '' );
             setFavorite( false );
 
