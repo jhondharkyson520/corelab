@@ -1,4 +1,3 @@
-# Use a imagem base do Node.js
 FROM node:alpine
 
 

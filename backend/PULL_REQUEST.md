@@ -29,6 +29,99 @@ Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permiti
 │   └── server.ts
 └── 
 ```
+
+## Docker
+
+O projeto está configurado para ser executado via Docker Compose, o que facilita a configuração e o gerenciamento dos serviços necessários.
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  db_postgres_core_note:
+    image: postgres:16.3
+    container_name: db_postgres_core_note
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: corenotes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - network_core_note
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "15433:80"
+    networks:
+      - network_core_note
+    restart: unless-stopped
+
+  backend_core_note:
+    build: .
+    container_name: backend_core_note
+    environment:
+      DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db_postgres_core_note:5432/corenotes?schema=public"
+    volumes:
+      - .:/usr/app
+    ports:
+      - "3333:3333"
+    networks:
+      - network_core_note
+    restart: unless-stopped
+
+networks:
+  network_core_note:
+
+volumes:
+  postgres_data:
+```
+
+### Dockerfile
+
+O backend está configurado com o seguinte Dockerfile:
+
+```dockerfile
+FROM node:alpine
+
+WORKDIR /usr/app
+
+COPY package*.json ./
+
+RUN npm install -g prisma && npm install
+
+COPY . .
+
+RUN npx prisma generate
+
+EXPOSE 3333
+
+CMD ["sh", "-c", "npx prisma migrate dev --name init && npm start"]
+```
+
+### Script de Inicialização
+
+```bash
+#!/bin/sh
+
+if [ ! -f ".initialized" ]; then
+  prisma generate
+  prisma migrate dev
+  touch .initialized
+fi
+
+npm start
+```
+
 ## Instruções para Execução
 
 ### Backend
