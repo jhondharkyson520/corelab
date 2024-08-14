@@ -42,7 +42,7 @@ Este projeto é uma aplicação web para criar e gerenciar listas de tarefas. A 
 
 3. **Inicie o servidor de desenvolvimento:**
    ```bash
-   npm start
+   npm run dev
 
 ### Funcionalidades
 

@@ -15,20 +15,19 @@ type ListProps = {
 }
 
 interface NoteProps {
-  notesFavorites: ListProps[];
+  notesFavorites?: ListProps[];
 }
+
 function App({notesFavorites}: NoteProps) {
   const [notesList, setNotesList] = useState(notesFavorites || []);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
-  
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
 
   useEffect(() => { 
+
     async function fetchDataNote() {
       try {
           const response = await getNotes();
-          setNotesList(response.data);
-          //console.log('Note list: ', notesList);              
+          setNotesList(response.data);            
       } catch (error) {
           console.error("Error read note:", error);
       }
@@ -36,9 +35,10 @@ function App({notesFavorites}: NoteProps) {
     fetchDataNote();
 
 }, []);
+
   return (
     <>
-      <NoteContext.Provider value={{ notesList, setNotesList}}>     
+      <NoteContext.Provider value={{notesList, setNotesList}}>     
         <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
         <CreateNotes/>
         <FavoritesNotes searchTerm={searchTerm}/>

@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permitindo aos usuários criar, ler, atualizar e excluir itens da lista de tarefas. Também adiciona a capacidade de marcar itens como favoritos e definir cores para cada item.
+Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permitindo aos usuários criar, ler, atualizar e excluir itens da lista de tarefas. Também adiciona a capacidade de marcar itens como favoritos e definir cores para cada item. O reposotório completo do projeto pode ser acessado em: https://github.com/jhondharkyson520/corelab
 
 ## O que foi feito
 
@@ -53,7 +53,7 @@ Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permiti
 
 3. Inicie o servidor de desenvolvimento:
     ```bash
-    npm start
+    npm run dev
     ```
 
 ## Funcionalidades

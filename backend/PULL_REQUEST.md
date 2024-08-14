@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permitindo aos usuários criar, ler, atualizar e excluir itens da lista de tarefas.
+Este Pull Request introduz a funcionalidade de gerenciamento de tarefas, permitindo aos usuários criar, ler, atualizar e excluir itens da lista de tarefas. O reposotório completo do projeto pode ser acessado em: https://github.com/jhondharkyson520/corelab
 
 ## O que foi feito
 
