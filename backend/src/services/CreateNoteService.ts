@@ -16,7 +16,7 @@ class CreateNoteService{
             if(color) {
                 return color;
             } else {
-                return 'FFFFFF';
+                return '#FFFFFF';
             }
         };
 

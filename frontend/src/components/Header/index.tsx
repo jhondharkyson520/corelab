@@ -2,6 +2,8 @@ import styled from "styled-components";
 import iconSearch from '../../assets/icons/search.svg';
 import iconClose from '../../assets/icons/close.svg';
 import imgLogo from '../../assets/logo/logo.svg';
+import NoteContext from "../../context/NoteContext";
+import { useContext } from "react";
 
 const HeaderContainer = styled.header`
     display: flex;
@@ -102,9 +104,14 @@ const IconClose = styled.img`
     padding-bottom: 0.3rem;
 `;
 
+interface HeaderProps {
+    searchTerm: string;
+    setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  }
 
+function Header({ searchTerm, setSearchTerm }: HeaderProps){
 
-function Header(){
+    
     return (
         <HeaderContainer>
            
@@ -114,7 +121,12 @@ function Header(){
                     <Title>CoreNotes</Title>
 
                     <SearchContainer>
-                        <SearchInput type="text" placeholder="Pesquisar notas" />
+                        <SearchInput 
+                        type="text" 
+                        placeholder="Pesquisar notas" 
+                        value={searchTerm} 
+                        onChange={(e) => setSearchTerm(e.target.value)}  
+                    />
                         <SearchIcon src={iconSearch} alt="Icon Search" />
                     </SearchContainer>
 

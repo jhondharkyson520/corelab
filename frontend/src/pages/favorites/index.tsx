@@ -3,9 +3,10 @@ import imgEditNote from '../../assets/icons/editNote.svg';
 import imgEditColor from '../../assets/icons/editColor.svg';
 import imgDeleteNote from '../../assets/icons/close.svg';
 import imgStarYellow from '../../assets/icons/starYellow.svg';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { deleteNote, getNotes, updateNote } from '../../services/api';
 import { toast } from 'react-toastify';
+import NoteContext from '../../context/NoteContext';
 
 const SectionContainer = styled.section`
     width: 100%;
@@ -93,8 +94,7 @@ const ContainerNote = styled.div`
    
 `;
 
-const ContainerFavorites = styled.div`
-    
+const ContainerFavorites = styled.div`    
     width: 100%;
     padding-left: 2rem;
     margin-bottom: 0.5rem;
@@ -109,10 +109,7 @@ const ContainerFavorites = styled.div`
       display: flex;
       padding-left: 6rem;
       margin-bottom: 0.5rem;
-
-    }
-
-   
+    }   
 `;
 
 const ContainerOptions = styled.div`
@@ -235,21 +232,15 @@ const ColorButton = styled.button<{ color: string }>`
   }
 `;
 
-type ListProps = {
-    id: string;
-    title: string;
-    note: string;
-    favorite: boolean;
-    color: string;
-}
+interface SearchProps {
+    searchTerm: string;
+  }
+  
 
-interface NoteProps {
-    notesFavorites: ListProps[];
-}
 
-function FavoritesNotes({notesFavorites}: NoteProps) {
+function FavoritesNotes({searchTerm}: SearchProps) {
 
-    const [notesList, setNotesList] = useState(notesFavorites || []);
+    const { notesList, setNotesList } = useContext(NoteContext)!;
     const [ favorite, setFavorite ] = useState(true);
 
     const [ openContainerEditColor, setOpenContainerEditColor ] = useState<string | null>(null);
@@ -400,7 +391,11 @@ function FavoritesNotes({notesFavorites}: NoteProps) {
         note.id === id ? { ...note, note: newNote } : note
       )
     );
-  };    
+  };
+
+  useEffect(() => {
+    
+  }, [notesList, searchTerm]);
 
   return (
  
@@ -414,7 +409,11 @@ function FavoritesNotes({notesFavorites}: NoteProps) {
                 <ContainerItems >
 
                  {notesList
-                  .filter((note) => note.favorite === true)
+                  .filter((note) => 
+                    note.favorite === true  &&
+                    (note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    note.note.toLowerCase().includes(searchTerm.toLowerCase()))
+                  )
                   .map((notesFavorites) => (         
                 
                  <ContainerMain key={notesFavorites.id} color={notesFavorites.color}>

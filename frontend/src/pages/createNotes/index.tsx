@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import imgStarTransparent from '../../assets/icons/starTransparent.svg';
 import imgStarYellow from '../../assets/icons/starYellow.svg';
-import { useState } from 'react';
-import { createNote } from '../../services/api';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import { createNote, getNotes } from '../../services/api';
 import { toast } from 'react-toastify';
+import NoteContext from '../../context/NoteContext';
 
 const SectionContainer = styled.section`    
     display: flex;
@@ -94,7 +95,7 @@ const ContainerNote = styled.div`
 
 
 function CreateNotes() {
-
+    const { notesList, setNotesList } = useContext(NoteContext) || {};
     const [favorite, setFavorite] = useState(false);
     const [title, setTitle] = useState('');
     const [note, setNote] = useState('');
@@ -115,12 +116,16 @@ function CreateNotes() {
         const newNote = {
           title,
           note,
-          favorite
+          favorite,
         };
       
-        try {
+        try {           
 
             const response = await createNote(newNote);
+
+            if (setNotesList) {
+                setNotesList((prevNotes: any) => [...prevNotes, newNote]);
+              }
             toast.success('Nota criada');         
             setTitle('');
             setNote( '' );
@@ -146,6 +151,10 @@ function CreateNotes() {
         }
 
     };
+
+    useEffect(() => {
+       getNotes();
+    },[])
 
   return (
 

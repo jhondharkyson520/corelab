@@ -22,7 +22,7 @@ class CreateNoteService {
                     return color;
                 }
                 else {
-                    return 'FFFFFF';
+                    return '#FFFFFF';
                 }
             };
             const createNotes = yield client_1.default.notes.create({
