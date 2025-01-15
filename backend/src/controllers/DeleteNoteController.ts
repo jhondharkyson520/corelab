@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import {DeleteNoteService} from '../services/DeleteNoteService'
 
 class DeleteNoteController{
-
     async handle(request: Request, response: Response) {
-
         const {id} = request.params;
         const deleteNoteService = new DeleteNoteService();
         const notes = await deleteNoteService.execute({id});

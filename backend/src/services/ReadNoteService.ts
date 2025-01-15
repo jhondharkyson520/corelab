@@ -1,7 +1,6 @@
 import prismaClient from "../prisma/client";
 
 class ReadNoteService{
-
     async execute(){
         const allNotes = await prismaClient.notes.findMany({
             select: {

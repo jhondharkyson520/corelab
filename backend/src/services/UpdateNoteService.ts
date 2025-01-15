@@ -8,8 +8,7 @@ interface UpdateNoteRequest{
     color: string;
 };
 
-class UpdateNoteService{ 
-
+class UpdateNoteService{
     async execute({id, title, note, favorite, color}: UpdateNoteRequest){
         const updateNotes = await prismaClient.notes.update({
             where:{ 

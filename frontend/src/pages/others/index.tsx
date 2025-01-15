@@ -28,9 +28,9 @@ interface SearchProps {
 function OthersNotes({searchTerm}: SearchProps) {
 
     const { notesList, setNotesList } = useContext(NoteContext)!;
-    const [ favorite, setFavorite ] = useState(true);
+    const [ favorite, ] = useState(true);
     const [ openContainerEditColor, setOpenContainerEditColor ] = useState<string | null>(null);
-    const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [, setSelectedColor] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null); 
     const colors = [
       '#BAE2FF', '#B9FFDD', '#FFE8AC', '#FFCAB9',

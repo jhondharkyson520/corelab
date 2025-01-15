@@ -2,9 +2,7 @@ import { Request, Response } from "express";
 import { UpdateNoteService } from "../services/UpdateNoteService";
 
 class UpdateNoteController{
-
     async handle(request: Request, response: Response) {
-
         const {id} = request.params;
         const {title, note, favorite, color} = request.body;
         const updateNote = new UpdateNoteService();

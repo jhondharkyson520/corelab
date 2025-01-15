@@ -11,7 +11,6 @@ interface CreateNoteRequest{
 class CreateNoteService{
 
     async execute({id, title, note, favorite, color}: CreateNoteRequest ) {
-
         const colorControler = () => {
             if(color) {
                 return color;

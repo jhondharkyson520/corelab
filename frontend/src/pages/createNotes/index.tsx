@@ -9,7 +9,7 @@ import { ContainerMain, ContainerNote, ContainerTitle, InputTitle, SectionContai
 
 function CreateNotes() {
 
-    const { notesList, setNotesList } = useContext(NoteContext) || {};
+    const { setNotesList } = useContext(NoteContext) || {};
     const [favorite, setFavorite] = useState(false);
     const [title, setTitle] = useState('');
     const [note, setNote] = useState('');
@@ -32,7 +32,7 @@ function CreateNotes() {
         };
       
         try { 
-            const response = await createNote(newNote);
+            await createNote(newNote);
 
             if (setNotesList) {
                 setNotesList((prevNotes: any) => [...prevNotes, newNote]);

@@ -2,12 +2,9 @@ import { Request, Response } from "express";
 import {CreateNoteService} from '../services/CreateNoteService'; 
 
 class CreateNoteController{
-
     async handle(request: Request, response: Response){
-
         const {id, title, note, favorite, color} = request.body;
         const createNote = new CreateNoteService();
-
         const notes = await createNote.execute({
             id,
             title,
